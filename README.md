@@ -10,6 +10,8 @@ You can pause the script without disabling the script as a whole during runtime 
 
 Additionally, changing the max camera zoom distance during runtime by changing the attribute `maxrange` (`[scriptobject]:SetAttribute (maxrange, [newrange]`) to  the new range you want to limit the player to. The max camera zoom defaults to whatever the players `CameraMaxZoomDistance` is set to (you can change this pre runtime and during runtime via `game.Players[playerobject].CameraMaxZoomDistance`.
 
+
+## More Important (Legally Binding ✨Bizzaz✨), But Still Lastly Mentioned
 This repository (https://github.com/saint-deity/Roblox-Camera-Fix), and the files within it are subject to the MIT License. Please review it if you have any doubts on permissability, or contact me on Discord (username is stdeity) for questions or advice (DONT ASK TO ASK (https://dontasktoask.com/), IF YOU ARE GOING TO DM ME, JUST ASK THE QUESTION YOU HAVE FOR THE LOVE OF ALL THAT IS HOLY) (IF YOU WANNA ASK IF SOMETHING MIGHT WORK, JUST TRY IT AND SEE!!!!! (https://tryitands.ee/)).
 
 Is credit necessary? Yes :> I would really like to be credited wherever possible, also the license is an MIT License and not MIT-0, so the license itself suggests attribution should be provided where possible.
