@@ -27,13 +27,11 @@
 
 script:SetAttribute ('cameraeditable', true)
 local rs = game:GetService ('RunService')
-local uis = game:GetService ('UserInputService')
 local camera = workspace.CurrentCamera
 local client = game.Players.LocalPlayer
 script:SetAttribute ('maxrange', client.CameraMaxZoomDistance)
 local character = client.Character or client.CharacterAdded:Wait ( )
 local cameraeditable = script:GetAttribute ('cameraeditable')
-local shiftlocked = client:GetAttribute ('ShiftLocked')
 local maxrange = script:GetAttribute ('maxrange')
 local connection = nil
 local saved, was = 0, false
