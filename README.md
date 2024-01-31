@@ -1,7 +1,7 @@
 # Roblox Camera Fix!
 ![image](https://github.com/saint-deity/Roblox-Camera-Fix/assets/59446525/f9816255-474e-4c08-b481-f92c48b17866)
 
-This repository is an absolute (don't quote me on that 😭) fix to the behaviour of cameras allowing players to clip said cameras through walls, revealing content that should otherwise not be visible without it being released by the developer or the player finding/unlocking that content themselves. No more players shiftlocking through walls to reveal secrets you are yet to unveil! Camera glitches, gone! (kind of).
+This repository is an absolute (don't quote me on that 😭) fix to the behavior of cameras allowing players to clip said cameras through walls, revealing content that should otherwise not be visible without it being released by the developer or the player finding/unlocking that content themselves. No more players shiftlocking through walls to reveal secrets you are yet to unveil! Camera glitches, gone! (kind of).
 
 ## Known Issues
 * When using the default ShiftLock function provided by Roblox, the camera is offset from the head by a significant amount, and as such, when a player puts the right side of their character against a straight wall, they can see through to some extent. I'm making a custom ShiftLock module for this camera control for my own use and will publicize it when it's in a working condition.
