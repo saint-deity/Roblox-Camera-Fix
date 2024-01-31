@@ -3,7 +3,8 @@
 
 This repository is an absolute (don't quote me on that 😭) fix to the behaviour of cameras allowing players to clip said cameras through walls, revealing content that should otherwise not be visible without it being released by the developer or the player finding/unlocking that content themselves. No more players shiftlocking through walls to reveal secrets you are yet to unveil! Camera glitches, gone! (kind of).
 
-### No issues that I know of at the moment.
+## Known Issues
+* When using the default ShiftLock function provided by Roblox, the camera is offset from the head by a significant amount, and as such, when a player puts the right side of their character against a straight wall, they can see through to some extent. I'm making a custom ShiftLock module for this camera control for my own use and will publicize it when it's in a working condition.
 
 ## Attributes
 You can pause the script without disabling the script as a whole during runtime by changing the attribute `cameraeditable` (`[scriptobject]:SetAttribute (cameraeditable, [boolean]`) to false, and resume the fix by changing that same attribute back to true, though this isn't necessary as my own version uses it for something else, and thus in this version; doing so will have the same effect as disabling the script.
