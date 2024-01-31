@@ -7,9 +7,9 @@ This repository is an absolute (don't quote me on that 😭) fix to the behaviou
 * When using the default ShiftLock function provided by Roblox, the camera is offset from the head by a significant amount, and as such, when a player puts the right side of their character against a straight wall, they can see through to some extent. I'm making a custom ShiftLock module for this camera control for my own use and will publicize it when it's in a working condition.
 
 ## Attributes
-You can pause the script without disabling the script as a whole during runtime by changing the attribute `cameraeditable` (`[scriptobject]:SetAttribute (cameraeditable, [boolean]`) to false, and resume the fix by changing that same attribute back to true, though this isn't necessary as my own version uses it for something else, and thus in this version; doing so will have the same effect as disabling the script.
+You can pause the script without disabling the script as a whole during runtime by changing the attribute `cameraeditable` (`[scriptobject]:SetAttribute (cameraeditable, [boolean])`) to false, and resume the fix by changing that same attribute back to true, though this isn't necessary as my own version uses it for something else, and thus in this version; doing so will have the same effect as disabling the script.
 
-Additionally, changing the max camera zoom distance during runtime by changing the attribute `maxrange` (`[scriptobject]:SetAttribute (maxrange, [newrange]`) to  the new range you want to limit the player to. The max camera zoom defaults to whatever the players `CameraMaxZoomDistance` is set to (you can change this pre runtime and during runtime via `game.Players[playerobject].CameraMaxZoomDistance`.
+Additionally, changing the max camera zoom distance during runtime by changing the attribute `maxrange` (`[scriptobject]:SetAttribute (maxrange, [newrange])`) to  the new range you want to limit the player to. The max camera zoom defaults to whatever the players `CameraMaxZoomDistance` is set to (you can change this pre runtime and during runtime via `game.Players[playerobject].CameraMaxZoomDistance`.
 
 
 ## More Important (Legally Binding ✨Bizzaz✨), But Still Lastly Mentioned
