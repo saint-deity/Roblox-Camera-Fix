@@ -4,7 +4,8 @@
 This repository is an absolute (don't quote me on that 😭) fix to the behavior of cameras allowing players to clip said cameras through walls, revealing content that should otherwise not be visible without it being released by the developer or the player finding/unlocking that content themselves. No more players shiftlocking through walls to reveal secrets you are yet to unveil! Camera glitches, gone! (kind of).
 
 ## How To Use
-You can either set it up yourself (not recommended) or you can download the [`Deities-Custom-Camera.rbxm`](https://github.com/saint-deity/Roblox-Camera-Fix/blob/main/Deities-Custom-Camera.rbxm) file and import it, following all the instructions carefully provided within the README script.
+You can either set it up yourself (not recommended) or you can download the repository and import the file labelled [`Deities-Custom-Camera.rbxm`](https://github.com/saint-deity/Roblox-Camera-Fix/blob/main/Deities-Custom-Camera.rbxm), following all the instructions carefully provided within the README script to set it up.
+![image](https://github.com/saint-deity/Roblox-Camera-Fix/assets/59446525/2a74fdde-85ee-442a-9910-973f720c6f5c)
 
 ## Known Issues
 * NO KNOWN ISSUES
