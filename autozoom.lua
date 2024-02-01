@@ -42,15 +42,16 @@ local AutoZoom = { }
 -- that can be reused later various times.
 --
 local rs = game:GetService ('RunService')
+local ps = game:GetService ('Players')
 local root = script.Parent
 local camera = workspace.CurrentCamera
-local client = game.Players.LocalPlayer
+local client = ps.LocalPlayer
 local character = client.Character or client.CharacterAdded:Wait ( )
 local cameraeditable = root:GetAttribute ('cameraeditable')
 local maxrange = root:GetAttribute ('maxrange')
 local connection = nil
 local saved, was = 0, false
-local head = character:WaitForChild ('Head')
+local head, rootpart = character:WaitForChild ('Head'), character:FindFirstChild ('HumanoidRootPart')
 local mouse = client:GetMouse ( )
 
 local ignoredlist = {character}
@@ -66,6 +67,18 @@ local ignoredlist = {character}
 
 function AutoZoom.connectioninit ( )
 	connection = rs.RenderStepped:Connect (function ( )
+		coroutine.wrap (function ( )
+			for _, v in pairs (ps:GetChildren ( )) do
+				local _character = v.Character or v.CharacterAdded:Wait ( )
+				if table.find (ignoredlist, _character) then
+					continue
+				end
+
+				table.insert (ignoredlist, _character)
+				_character = nil
+			end
+		end) ( )
+		
 		if not cameraeditable then return end
 		root:SetAttribute ('Zoom', (camera.CFrame.p - head.Position).Magnitude)
 		local ray = Ray.new (head.CFrame.p, -camera.CFrame.lookVector*saved)
@@ -83,25 +96,47 @@ function AutoZoom.connectioninit ( )
 			local mag = (head.Position - hitPos).magnitude
 			if mag > maxrange then mag = maxrange end
 			client.CameraMaxZoomDistance = mag
-			
-			if client:GetAttribute ('ShiftLock') then
-				local focus = camera:FindFirstChildOfClass ('Part')
-				local ray = Ray.new (head.CFrame.p, camera.CFrame.rightVector*saved)
-				local hitPart, hitPos = workspace:FindPartOnRayWithIgnoreList (ray, {game.Players.LocalPlayer.Character})
-				if hitPart then
-					local focus = camera:FindFirstChildOfClass ('Part'):FindFirstChildOfClass ('ManualWeld')
-					focus.C0 = CFrame.new (hitPos - camera.CFrame.rightVector*1.2)
-				end
-			end
 		else
 			if was then
 				was = false
 				client.CameraMaxZoomDistance = maxrange
 				client.CameraMinZoomDistance = saved
-				task.wait (0.1)
+				task.wait (0.2)
 				client.CameraMinZoomDistance = 0.5
 			else
 				saved = (camera.CFrame.p - head.Position).Magnitude
+			end
+		
+			camera.FieldOfView = 70
+		end
+		
+		if client:GetAttribute ('ShiftLock') then
+			ray = Ray.new (camera.CFrame.p, camera.CFrame.LookVector)
+			hitPart, hitPos = workspace:FindPartOnRayWithIgnoreList (ray, ignoredlist, false, true)
+			if hitPart then
+				local bounds = hitPart.Size.magnitude/2 + (hitPart.Position - hitPos).magnitude
+				local dist = (camera.CFrame.p - hitPos).magnitude
+				local fov = math.rad (camera.FieldOfView)
+				local angle = 2 * math.atan ((bounds/dist) * math.tan (fov/2))
+
+				camera.FieldOfView = math.deg (angle)
+			end
+
+			ray = Ray.new (head.CFrame.p, head.CFrame.RightVector*2)
+			hitPart, hitPos = workspace:FindPartOnRayWithIgnoreList (ray, ignoredlist, false, true)
+			if hitPart then
+				root:SetAttribute ('xoffset', 0)
+				camera.FieldOfView = 68
+				return
+			end
+			
+			ray = Ray.new (head.CFrame.p, camera.CFrame.RightVector)
+			hitPart, hitPos = workspace:FindPartOnRayWithIgnoreList (ray, ignoredlist, false, true)
+
+			if hitPart then
+				root:SetAttribute ('xoffset', (camera.CFrame.p - hitPos).magnitude-1)
+			else
+				root:SetAttribute ('xoffset', 1.5)
 			end
 		end
 	end)
