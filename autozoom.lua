@@ -52,6 +52,9 @@ local connection = nil
 local saved, was = 0, false
 local head = character:WaitForChild ('Head')
 local mouse = client:GetMouse ( )
+
+local ignoredlist = {character}
+
 --
 -- == SIGNALS & CONNECTIONS ==
 -- These are events that will occur when
@@ -66,8 +69,15 @@ function AutoZoom.connectioninit ( )
 		if not cameraeditable then return end
 		root:SetAttribute ('Zoom', (camera.CFrame.p - head.Position).Magnitude)
 		local ray = Ray.new (head.CFrame.p, -camera.CFrame.lookVector*saved)
-		local hitPart, hitPos = workspace:FindPartOnRayWithIgnoreList (ray, {game.Players.LocalPlayer.Character})
+		local hitPart, hitPos = workspace:FindPartOnRayWithIgnoreList (ray, ignoredlist, false, true)
+		
 		if hitPart then
+			print ("material: ", hitPart.Material)
+			if not hitPart.CanCollide and hitPart.Transparency > 0.4 or not hitPart.CanCollide or hitPart.Transparency > 0.4 then
+				table.insert (ignoredlist, hitPart)
+				return
+			end
+			
 			was = true
 
 			local mag = (head.Position - hitPos).magnitude
@@ -79,8 +89,8 @@ function AutoZoom.connectioninit ( )
 				local ray = Ray.new (head.CFrame.p, camera.CFrame.rightVector*saved)
 				local hitPart, hitPos = workspace:FindPartOnRayWithIgnoreList (ray, {game.Players.LocalPlayer.Character})
 				if hitPart then
-					local focus = camera:FindFirstChildOfClass ('Part')
-					focus.CFrame = CFrame.new (hitPos - camera.CFrame.rightVector*1.2)
+					local focus = camera:FindFirstChildOfClass ('Part'):FindFirstChildOfClass ('ManualWeld')
+					focus.C0 = CFrame.new (hitPos - camera.CFrame.rightVector*1.2)
 				end
 			end
 		else
