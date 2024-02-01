@@ -48,7 +48,7 @@ local shiftlocked = client:GetAttribute ('ShiftLocked')
 
 script:SetAttribute ('cameraeditable', false)
 script:SetAttribute ('maxrange', client.CameraMaxZoomDistance)
-
+script:SetAttribute ('xoffset', 1.5)
 --
 -- == AUTOZOOM ==
 -- This is a child of the main script. is 
