@@ -48,6 +48,7 @@ local rs = game:GetService ('RunService')
 local ts = game:GetService ('TweenService')
 local client = ps.LocalPlayer
 local character = client.Character or client.CharacterAdded:Wait ( )
+local humanoid = character:FindFirstChild ('Humanoid')
 local camera = workspace.CurrentCamera
 local root = script.Parent
 local cameraeditable = root:GetAttribute ('cameraeditable')
@@ -70,11 +71,12 @@ function ShiftLock.shiftlockinit ( )
 		shiftlockthread = nil
 	end
 	
-	local head = character:WaitForChild ("Head")
-
+	local head, rootpart, rootattch = character:FindFirstChild ("Head"), character:FindFirstChild ('HumanoidRootPart'), nil
+	rootattch = rootpart:FindFirstChild ('RootAttachment')
+	
 	look = camera.CFrame.lookVector
 	look = Vector3.new (look.X, 0, look.Z)
-	character:SetPrimaryPartCFrame (CFrame.new (character.PrimaryPart.Position, character.PrimaryPart.Position + look))
+	character:SetPrimaryPartCFrame (CFrame.new (rootpart.CFrame.p, rootpart.CFrame.p + look))
 	
 	focus = Instance.new ('Part')
 	focus.Transparency = 1
@@ -82,47 +84,60 @@ function ShiftLock.shiftlockinit ( )
 	focus.CanTouch = false
 	focus.CanQuery = false
 	focus.EnableFluidForces = false
-	focus.Anchored = true
 	focus.CFrame = head.CFrame
 	focus.Parent = camera
+	focus.CFrame = rootpart.CFrame * CFrame.new (1.5, 1.5, -0.1)
 	
-	-- change mouse icon
+	local manualweld = Instance.new ('ManualWeld')
+	manualweld.Part0 = rootpart
+	manualweld.Part1 = focus
+	manualweld.C0 = CFrame.new (1.5, 1.5, -0.1)
+	manualweld.Parent = focus
+	
+	local attachment = Instance.new ('Attachment')
+	attachment.Parent = focus
+	attachment.Visible = true
+	
+	local alignorientation = Instance.new ('AlignOrientation')
+	alignorientation.AlignType = Enum.AlignType.PrimaryAxisLookAt
+	alignorientation.Attachment0 = rootattch
+	alignorientation.Attachment1 = attachment
+	alignorientation.MaxTorque = 10000000
+	alignorientation.Responsiveness = 200
+	alignorientation.RigidityEnabled = true
+	
 	client:GetMouse ( ).Icon = 'rbxasset://textures/MouseLockedCursor.png'
 	
 	camera.CameraSubject = focus
 	local last = character.PrimaryPart.CFrame.p
 	shiftlockthread = rs.RenderStepped:Connect (function ( )
-		if not cameraeditable then return end
+		if not cameraeditable then return end 
+		
+		look = camera.CFrame.lookVector
+		look = Vector3.new (look.X, 0, look.Z)
+		--character:SetPrimaryPartCFrame (CFrame.new (rootpart.CFrame.p, rootpart.CFrame.p + look))
+		attachment.CFrame = CFrame.new (rootpart.CFrame.p, look)
 		
 		local forwardoffset = 0
 		local negativeoffset = 0
 		
-		if character:FindFirstChild ('Humanoid').MoveDirection.Magnitude ~= 0 then
+		if humanoid.MoveDirection.Magnitude ~= 0 then
 			forwardoffset = 0.5
 		end
 		
-		if root:GetAttribute ('Zoom') < 1+forwardoffset then
-			camera.CameraSubject = character:FindFirstChild ('Humanoid')
-		elseif root:GetAttribute ('Zoom') > 1+forwardoffset then
-			negativeoffset = (1.5 + forwardoffset)/root:GetAttribute ('Zoom')
+		local zoom = root:GetAttribute ('Zoom')
+		if zoom < 1 + forwardoffset then
+			camera.CameraSubject = humanoid
+		elseif zoom > 1 + forwardoffset then
+			negativeoffset = (1.5 + forwardoffset) / zoom
+			manualweld.C0 = CFrame.new (1.5 - negativeoffset, 1.5, -0.1)
 			camera.CameraSubject = focus
 		end
 		
-		focus.CFrame = focus.CFrame:Lerp (character:FindFirstChild ('HumanoidRootPart').CFrame * CFrame.new (1.5-negativeoffset, 1.5, -0.1), 1)
 		uis.MouseBehavior = lockcenter
 		look = camera.CFrame.lookVector
 		look = Vector3.new (look.X, 0, look.Z)
-		
-		if (character.PrimaryPart.CFrame.p - last).Magnitude < 0.0007 then
-			if character:FindFirstChild ('Humanoid'):GetState ( ) ~= Enum.HumanoidStateType.Freefall and character:FindFirstChild ('Humanoid').MoveDirection.Magnitude == 0 or character:FindFirstChild ('Humanoid'):GetState ( ) ~= Enum.HumanoidStateType.FallingDown and character:FindFirstChild ('Humanoid').MoveDirection.Magnitude == 0 then
-				character:SetPrimaryPartCFrame (CFrame.new (character.PrimaryPart.Position, character.PrimaryPart.Position + look))
-				last = character.PrimaryPart.CFrame.p
-			end
-			
-			return
-		end
-		
-		character:SetPrimaryPartCFrame (CFrame.new (character.PrimaryPart.Position, character.PrimaryPart.Position + look))
+	
 		last = character.PrimaryPart.CFrame.p
 	end)
 end
@@ -130,7 +145,7 @@ end
 function ShiftLock.shiftlockdisc ( )
 	if cameraeditable then
 		uis.MouseBehavior = default
-		camera.CameraSubject = character:FindFirstChild ('Humanoid')
+		camera.CameraSubject = humanoid
 	end
 	
 	client:GetMouse ( ).Icon = ''
