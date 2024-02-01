@@ -8,7 +8,7 @@ You can either set it up yourself (not recommended) or you can download the repo
 ![image](https://github.com/saint-deity/Roblox-Camera-Fix/assets/59446525/2a74fdde-85ee-442a-9910-973f720c6f5c)
 
 ## Known Issues
-* NO KNOWN ISSUES
+* The ShiftLock will appear to cause a jitter on the clients character. This should only be visible locally and is causes by low framerates. I would try to find a way around this but I have had little to no luck thus far with other approaches.
 
 ## Attributes
 You can pause the script without disabling the script as a whole during runtime by changing the attribute `cameraeditable` (`[scriptobject]:SetAttribute (cameraeditable, [boolean])`) to false, and resume the fix by changing that same attribute back to true, though this isn't necessary as my own version uses it for something else, and thus in this version; doing so will have the same effect as disabling the script.
