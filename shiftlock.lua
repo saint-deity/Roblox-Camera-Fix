@@ -94,18 +94,7 @@ function ShiftLock.shiftlockinit ( )
 	manualweld.C0 = CFrame.new (1.5, 1.5, -0.1)
 	manualweld.Parent = focus
 	
-	local attachment = Instance.new ('Attachment')
-	attachment.Parent = focus
-	attachment.Visible = true
-	
-	local alignorientation = Instance.new ('AlignOrientation')
-	alignorientation.AlignType = Enum.AlignType.PrimaryAxisLookAt
-	alignorientation.Attachment0 = rootattch
-	alignorientation.Attachment1 = attachment
-	alignorientation.MaxTorque = 10000000
-	alignorientation.Responsiveness = 200
-	alignorientation.RigidityEnabled = true
-	
+	character:SetPrimaryPartCFrame (CFrame.new (rootpart.CFrame.p, rootpart.CFrame.p + look))
 	client:GetMouse ( ).Icon = 'rbxasset://textures/MouseLockedCursor.png'
 	
 	camera.CameraSubject = focus
@@ -115,8 +104,7 @@ function ShiftLock.shiftlockinit ( )
 		
 		look = camera.CFrame.lookVector
 		look = Vector3.new (look.X, 0, look.Z)
-		--character:SetPrimaryPartCFrame (CFrame.new (rootpart.CFrame.p, rootpart.CFrame.p + look))
-		attachment.CFrame = CFrame.new (rootpart.CFrame.p, look)
+		character:SetPrimaryPartCFrame (CFrame.new (rootpart.CFrame.p, rootpart.CFrame.p + look))
 		
 		local forwardoffset = 0
 		local negativeoffset = 0
