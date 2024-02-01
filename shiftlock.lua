@@ -45,15 +45,17 @@ local ShiftLock = {}
 local ps = game:GetService ('Players')
 local uis = game:GetService ('UserInputService')
 local rs = game:GetService ('RunService')
-local ts = game:GetService ('TweenService')
+local gs = UserSettings ( ):GetService ('UserGameSettings')
 local client = ps.LocalPlayer
 local character = client.Character or client.CharacterAdded:Wait ( )
 local humanoid = character:FindFirstChild ('Humanoid')
 local camera = workspace.CurrentCamera
 local root = script.Parent
 local cameraeditable = root:GetAttribute ('cameraeditable')
-local shiftlockthread, look, focus, tween = nil, nil, nil, nil
-local custom, follow, default, lockcenter = Enum.CameraType.Custom, Enum.CameraType.Follow, Enum.MouseBehavior.Default, Enum.MouseBehavior.LockCenter
+local shiftlockthread, look = nil, nil
+local default, lockcenter = Enum.MouseBehavior.Default, Enum.MouseBehavior.LockCenter
+local camerarelative, movementrelative = Enum.RotationType.CameraRelative, Enum.RotationType.MovementRelative
+
 --
 -- == SIGNALS & CONNECTIONS ==
 -- These are events that will occur when
@@ -73,38 +75,11 @@ function ShiftLock.shiftlockinit ( )
 	
 	local head, rootpart, rootattch = character:FindFirstChild ("Head"), character:FindFirstChild ('HumanoidRootPart'), nil
 	rootattch = rootpart:FindFirstChild ('RootAttachment')
-	
-	look = camera.CFrame.lookVector
-	look = Vector3.new (look.X, 0, look.Z)
-	character:SetPrimaryPartCFrame (CFrame.new (rootpart.CFrame.p, rootpart.CFrame.p + look))
-	
-	focus = Instance.new ('Part')
-	focus.Transparency = 1
-	focus.CanCollide = false
-	focus.CanTouch = false
-	focus.CanQuery = false
-	focus.EnableFluidForces = false
-	focus.CFrame = head.CFrame
-	focus.Parent = camera
-	focus.CFrame = rootpart.CFrame * CFrame.new (1.5, 1.5, -0.1)
-	
-	local manualweld = Instance.new ('ManualWeld')
-	manualweld.Part0 = rootpart
-	manualweld.Part1 = focus
-	manualweld.C0 = CFrame.new (1.5, 1.5, -0.1)
-	manualweld.Parent = focus
-	
-	character:SetPrimaryPartCFrame (CFrame.new (rootpart.CFrame.p, rootpart.CFrame.p + look))
 	client:GetMouse ( ).Icon = 'rbxasset://textures/MouseLockedCursor.png'
 	
-	camera.CameraSubject = focus
-	local last = character.PrimaryPart.CFrame.p
 	shiftlockthread = rs.RenderStepped:Connect (function ( )
 		if not cameraeditable then return end 
-		
-		look = camera.CFrame.lookVector
-		look = Vector3.new (look.X, 0, look.Z)
-		character:SetPrimaryPartCFrame (CFrame.new (rootpart.CFrame.p, rootpart.CFrame.p + look))
+		gs.RotationType = camerarelative
 		
 		local forwardoffset = 0
 		local negativeoffset = 0
@@ -113,31 +88,28 @@ function ShiftLock.shiftlockinit ( )
 			forwardoffset = 0.5
 		end
 		
+		local offset = root:GetAttribute ('xoffset')
 		local zoom = root:GetAttribute ('Zoom')
-		if zoom < 1 + forwardoffset then
-			camera.CameraSubject = humanoid
-		elseif zoom > 1 + forwardoffset then
-			negativeoffset = (1.5 + forwardoffset) / zoom
-			manualweld.C0 = CFrame.new (1.5 - negativeoffset, 1.5, -0.1)
-			camera.CameraSubject = focus
+		if offset > 0 then
+			if zoom > 1 + forwardoffset then
+				negativeoffset = (1.5 + forwardoffset) / zoom
+			elseif zoom < 1 + forwardoffset then
+				offset = 0
+				negativeoffset = 0
+			end
 		end
 		
+		print(offset)
+		humanoid.CameraOffset = Vector3.new (offset - negativeoffset, 0, 0)
 		uis.MouseBehavior = lockcenter
-		look = camera.CFrame.lookVector
-		look = Vector3.new (look.X, 0, look.Z)
-	
-		last = character.PrimaryPart.CFrame.p
 	end)
 end
 
 function ShiftLock.shiftlockdisc ( )
-	if cameraeditable then
-		uis.MouseBehavior = default
-		camera.CameraSubject = humanoid
-	end
-	
+	uis.MouseBehavior = default
+	gs.RotationType = movementrelative
 	client:GetMouse ( ).Icon = ''
-	focus:Destroy ( )
+	humanoid.CameraOffset = Vector3.new ( )
 	shiftlockthread:Disconnect ( )
 	shiftlockthread = nil
 end
