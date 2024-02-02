@@ -72,7 +72,8 @@ client.AttributeChanged:Connect (function (attr)
 	end
 end)
 
-uis.InputBegan:Connect (function (input)
+uis.InputBegan:Connect (function (input, gp)
+	if gp then return end
 	input = input.KeyCode
 	
 	if input == lshift or input == rshift then
